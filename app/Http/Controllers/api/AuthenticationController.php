@@ -54,7 +54,7 @@ class AuthenticationController extends BaseController
 
             $success['name'] =  $user->name;
             $success['token'] = $token->plainTextToken;
-            $success['token_expired'] = $token->accessToken->expires_at;
+            $success['token_expired_at'] = $token->accessToken->expires_at;
 
             return $this->sendResponse($success, 'User login successfully.');
         } 
