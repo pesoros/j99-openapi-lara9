@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\api;
    
 use Illuminate\Http\Request;
-use App\Http\Controllers\API\BaseController as BaseController;
+use App\Http\Controllers\api\BaseController as BaseController;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Validator;
@@ -31,10 +31,10 @@ class AuthenticationController extends BaseController
         $input = $request->all();
         $input['password'] = bcrypt($input['password']);
         $user = User::create($input);
-        $success['token'] =  $user->createToken('MyApp')->plainTextToken;
-        $success['name'] =  $user->name;
+        $result['token'] =  $user->createToken('MyApp')->plainTextToken;
+        $result['name'] =  $user->name;
    
-        return $this->sendResponse($success, 'User register successfully.');
+        return $this->sendResponse($result, 'User register successfully.');
     }
    
     /**
@@ -52,11 +52,11 @@ class AuthenticationController extends BaseController
             $user = Auth::user(); 
             $token=  $user->createToken($email, $ability, $expiredTime); 
 
-            $success['name'] =  $user->name;
-            $success['token'] = $token->plainTextToken;
-            $success['token_expired_at'] = $token->accessToken->expires_at;
+            $result['name'] =  $user->name;
+            $result['token'] = $token->plainTextToken;
+            $result['token_expired_at'] = $token->accessToken->expires_at;
 
-            return $this->sendResponse($success, 'User login successfully.');
+            return $this->sendResponse($result, 'User login successfully.');
         } 
         else{ 
             return $this->sendError('Unauthorised.', ['error'=>'Unauthorised']);

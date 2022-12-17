@@ -1,7 +1,7 @@
 <?php
 
+use App\Http\Controllers\api\HomeController;
 use App\Http\Controllers\api\AuthenticationController;
-use App\Http\Controllers\api\ProductController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Route;
 |
  */
 
+Route::get('', [HomeController::class, 'index']);
 Route::prefix('authentication')->group(function () {
     Route::controller(AuthenticationController::class)->group(function () {
         Route::post('register', 'register');
@@ -23,5 +24,4 @@ Route::prefix('authentication')->group(function () {
 });
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::resource('products', ProductController::class);
 });
