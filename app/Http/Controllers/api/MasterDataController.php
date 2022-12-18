@@ -19,6 +19,6 @@ class MasterDataController extends BaseController
     {
         $result = MasterData::city($province_id);
    
-        return $this->sendResponse($result, 'Get province successfully.');
+        return $this->sendResponse($result, 'Get City successfully.');
     }
 }
