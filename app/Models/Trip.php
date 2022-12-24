@@ -39,8 +39,8 @@ class Trip extends Model
             $whereext .= " AND cityarr.name = '".$end."'";
         }
 
-        $query = DB::select(
-            DB::raw("
+        $query = DB::connection('mysql2')->select(
+            DB::connection('mysql2')->raw("
                 SELECT
                 ta.trip_id AS trip_id_no,
                 ta.route AS trip_route_id,
@@ -92,8 +92,8 @@ class Trip extends Model
     }
 
     public function scopeSeatAvail($query, $trip_id_no, $date, $type){
-        $query = DB::select(
-            DB::raw("
+        $query = DB::connection('mysql2')->select(
+            DB::connection('mysql2')->raw("
                 SELECT 
                 tpc.ticket_number AS picked, 
                 tpc.seat_number AS seat_number
@@ -111,8 +111,8 @@ class Trip extends Model
 
     public function scopeGetBookedSeats($query, $trip_id_no, $booking_date, $fleet_type_id)
     {
-        $query = DB::select(
-            DB::raw("
+        $query = DB::connection('mysql2')->select(
+            DB::connection('mysql2')->raw("
                 SELECT
                 tb.seat_numbers AS booked_serial
                 FROM tkt_booking AS tb
@@ -127,8 +127,8 @@ class Trip extends Model
 
     public function scopeGetfleetseats($query, $fleet_type_id)
     {
-        $query = DB::select(
-            DB::raw("
+        $query = DB::connection('mysql2')->select(
+            DB::connection('mysql2')->raw("
                 SELECT
                 *
                 FROM fleet_type

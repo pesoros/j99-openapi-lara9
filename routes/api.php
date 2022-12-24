@@ -27,21 +27,22 @@ Route::prefix('authentication')->group(function () {
     });
 });
 
-Route::prefix('trip')->group(function () {
-    Route::controller(TripController::class)->group(function () {
-        Route::post('tripsearch', 'listbus');
-        Route::post('seatview', 'seatlist');
-    });
-});
-
-Route::prefix('reservation')->group(function () {
-    Route::controller(BookController::class)->group(function () {
-        Route::post('book', 'book');
-    });
-});
-
 Route::middleware('auth:sanctum')->group(function () {
     
+    Route::prefix('trip')->group(function () {
+        Route::controller(TripController::class)->group(function () {
+            Route::post('tripsearch', 'listbus');
+            Route::post('seatview', 'seatlist');
+        });
+    });
+    
+    Route::prefix('reservation')->group(function () {
+        Route::controller(BookController::class)->group(function () {
+            Route::post('book', 'book');
+            Route::post('confirmation', 'bookConfirmation');
+        });
+    });
+
     Route::prefix('master')->group(function () {
         Route::controller(MasterDataController::class)->group(function () {
             Route::get('province', 'province');

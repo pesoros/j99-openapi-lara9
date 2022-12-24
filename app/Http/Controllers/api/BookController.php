@@ -309,4 +309,32 @@ class BookController extends BaseController
 
         return $result;
     }
+
+    public function bookConfirmation(Request $request)
+    {
+        $getBooking = Book::getBooking($request->booking_id);
+        
+        if (!$getBooking) {
+            return $this->sendError('Booking not found');
+        }
+
+        $savePayment = Book::savePayment([
+            "payment_id" => $request->payment_id,
+            "external_id" => $request->booking_id,
+            "amount" => $request->amount,
+            "transaction_timestamp" => NOW(),
+            "channel_name" => $request->user()->name,
+            "code" => $request->user()->id
+        ]);
+
+        if (intval($request->amount) >= intval($getBooking->total_price)) {
+            $status = 1;
+        } else {
+            $status = 0;
+        }
+
+        $updatPaymentstatus = Book::updateStatusPayment($request->booking_id,$status);
+
+        return $this->sendResponse($request->all(), 'Confirmation successfully.');
+    }
 }

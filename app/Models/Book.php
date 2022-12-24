@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\DB;
 
 class Book extends Model
 {
-
     public function scopeGetCheckSeat($query, $datas)
     {
         $trip_id_no = isset($datas['trip_id_no']) ? $datas['trip_id_no'] : '';
@@ -16,7 +15,7 @@ class Book extends Model
         $fleet_type = isset($datas['fleet_type']) ? $datas['fleet_type'] : '';
         $seat_number = isset($datas['seat_number']) ? $datas['seat_number'] : '';
 
-        $query = DB::table("tkt_passenger_pcs AS tpp")
+        $query = DB::connection('mysql2')->table("tkt_passenger_pcs AS tpp")
             ->select('tpp.id')
             ->join("tkt_booking AS tb", "tb.id_no", "=", "tpp.booking_id")
             ->whereNull("tb.tkt_refund_id")
@@ -32,7 +31,7 @@ class Book extends Model
 
     public function scopeGetTruePrice($query, $date, $fleet_type, $pickup, $drop)
     {
-        $query = DB::table('trip_point AS tp')
+        $query = DB::connection('mysql2')->table('trip_point AS tp')
             ->select(
                 'tpr.price AS price',
                 'trext.price AS price_ext'
@@ -52,14 +51,14 @@ class Book extends Model
 
     public function scopeGetTripRoute($query, $trip_route_id)
     {
-        $query = DB::table('trip_route')->select('*')->where('id', $trip_route_id)->get();
+        $query = DB::connection('mysql2')->table('trip_route')->select('*')->where('id', $trip_route_id)->get();
 
         return $query;
     }
 
     public function scopeCheckBooking($query, $fleetId)
     {
-        $query = DB::table("fleet_type")
+        $query = DB::connection('mysql2')->table("fleet_type")
             ->select(
                 "total_seat", 
                 "seat_numbers",
@@ -73,7 +72,7 @@ class Book extends Model
 
     public function scopeCreateGroup($query, $data)
     {
-        $save = DB::table('ws_booking_history')
+        $save = DB::connection('mysql2')->table('ws_booking_history')
             ->insert($data);
 
         return $save;
@@ -81,7 +80,7 @@ class Book extends Model
 
     public function scopeGetBookedSeat($query, $tripIdNo, $booking_date)
     {
-        $query = DB::table('tkt_booking AS tb')
+        $query = DB::connection('mysql2')->table('tkt_booking AS tb')
             ->selectRaw("
                 tb.trip_id_no,
                 tb.seat_numbers AS booked_serial
@@ -96,7 +95,7 @@ class Book extends Model
 
     public function scopeCreateTktBooking($query, $data)
     {
-        $save = DB::table('tkt_booking')
+        $save = DB::connection('mysql2')->table('tkt_booking')
             ->insert($data);
 
         return $save;
@@ -104,7 +103,7 @@ class Book extends Model
 
     public function scopeCreateTicket($query, $data)
     {
-        $save = DB::table('tkt_passenger_pcs')
+        $save = DB::connection('mysql2')->table('tkt_passenger_pcs')
             ->insert($data);
 
         return $save;
@@ -113,9 +112,9 @@ class Book extends Model
     public function scopeGetWsSetting($query, $id)
     {
         if ($id !== null) {
-            $query = DB::table('ws_setting')->where('id', $id)->get();
+            $query = DB::connection('mysql2')->table('ws_setting')->where('id', $id)->get();
         } else {
-            $query = DB::table('ws_setting')->get();
+            $query = DB::connection('mysql2')->table('ws_setting')->get();
         }
 
         return $query;
@@ -123,7 +122,7 @@ class Book extends Model
 
     public function scopeCreateBooking($query, $data)
     {
-        $save = DB::table('tkt_booking_head')
+        $save = DB::connection('mysql2')->table('tkt_booking_head')
             ->insert($data);
 
         return $save;
@@ -131,10 +130,36 @@ class Book extends Model
 
     public function scopePaymentRegistration($query, $data)
     {
-        $save = DB::table('payment_registration')
+        $save = DB::connection('mysql2')->table('payment_registration')
             ->insert($data);
 
         return $save;
     }
 
+    public function scopeSavePayment($query, $data)
+    {
+        $save = DB::connection('mysql2')->table('payment_receive')
+            ->insert($data);
+
+        return $save;
+    }
+
+    public function scopeUpdateStatusPayment($query, $booking_code,$status)
+    {
+        $data['payment_status'] = $status;
+        $update = DB::connection('mysql2')->table('tkt_booking_head')
+            ->where('booking_code',$booking_code)
+            ->update($data);
+
+        return $update;
+    }
+
+    public function scopeGetBooking($query, $booking_code)
+    {
+        $booking = DB::connection('mysql2')->table('tkt_booking_head')
+            ->where('booking_code',$booking_code)
+            ->first();
+
+        return $booking;
+    }
 }
