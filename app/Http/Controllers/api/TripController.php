@@ -22,13 +22,13 @@ class TripController extends BaseController
         ];
 
         if (!$request->date) {
-            return $this->failNotFound('Data Not Found');
+            return $this->sendError('Date must be filled');
         } 
 
         $result = Trip::listBus($request);
         
         if (empty($result)) {
-            return $this->sendError('Validation Error.', $validator->errors());       
+            return $this->sendError('Data Not Found');       
         } 
 
         foreach ($result as $key => $value) {

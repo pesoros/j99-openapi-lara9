@@ -4,6 +4,7 @@ use App\Http\Controllers\api\HomeController;
 use App\Http\Controllers\api\AuthenticationController;
 use App\Http\Controllers\api\MasterDataController;
 use App\Http\Controllers\api\TripController;
+use App\Http\Controllers\api\BookController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -30,6 +31,12 @@ Route::prefix('trip')->group(function () {
     Route::controller(TripController::class)->group(function () {
         Route::post('tripsearch', 'listbus');
         Route::post('seatview', 'seatlist');
+    });
+});
+
+Route::prefix('reservation')->group(function () {
+    Route::controller(BookController::class)->group(function () {
+        Route::post('book', 'book');
     });
 });
 
