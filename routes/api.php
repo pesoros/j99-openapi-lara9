@@ -28,7 +28,8 @@ Route::prefix('authentication')->group(function () {
 
 Route::prefix('trip')->group(function () {
     Route::controller(TripController::class)->group(function () {
-        Route::post('listbus', 'listbus');
+        Route::post('tripsearch', 'listbus');
+        Route::post('seatview', 'seatlist');
     });
 });
 

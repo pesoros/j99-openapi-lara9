@@ -108,4 +108,34 @@ class Trip extends Model
 
         return $query;
     }
+
+    public function scopeGetBookedSeats($query, $trip_id_no, $booking_date, $fleet_type_id)
+    {
+        $query = DB::select(
+            DB::raw("
+                SELECT
+                tb.seat_numbers AS booked_serial
+                FROM tkt_booking AS tb
+                WHERE tb.trip_id_no = $trip_id_no
+                AND tb.fleet_type = $fleet_type_id
+                AND tb.booking_date LIKE '$booking_date%'
+            ")
+        );
+
+        return $query;
+    }
+
+    public function scopeGetfleetseats($query, $fleet_type_id)
+    {
+        $query = DB::select(
+            DB::raw("
+                SELECT
+                *
+                FROM fleet_type
+                WHERE id = $fleet_type_id
+            ")
+        );
+
+        return $query;
+    }
 }
