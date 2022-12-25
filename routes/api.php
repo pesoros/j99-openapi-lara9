@@ -5,6 +5,7 @@ use App\Http\Controllers\api\AuthenticationController;
 use App\Http\Controllers\api\MasterDataController;
 use App\Http\Controllers\api\TripController;
 use App\Http\Controllers\api\BookController;
+use App\Http\Controllers\api\CheckController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -41,6 +42,12 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::post('book', 'book');
             Route::post('confirmation', 'bookConfirmation');
             Route::post('cancel', 'bookCancelation');
+        });
+    });
+
+    Route::prefix('check')->group(function () {
+        Route::controller(CheckController::class)->group(function () {
+            Route::get('ticket/{booking_code}', 'cekTicket');
         });
     });
 
