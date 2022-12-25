@@ -33,11 +33,9 @@ class TripController extends BaseController
 
         foreach ($result as $key => $value) {
             $checkSeat = Trip::seatAvail($value->trip_id_no, $request->date, $value->type);
-            $value->seatPickedArr = $checkSeat; 
             $value->seatPicked = strval(COUNT($checkSeat)); 
             $value->seatAvail = intval($value->fleet_seats) - intval(COUNT($checkSeat)); 
             if ($value->seatAvail < 0) {
-                $value->redunt = $value->seatAvail; 
                 $value->seatAvail = 0;
             }
             $spday = explode(',', $value->sp_day);

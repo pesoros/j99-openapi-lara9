@@ -21,4 +21,27 @@ class MasterDataController extends BaseController
    
         return $this->sendResponse($result, 'Get City successfully.');
     }
+
+    public function resto()
+    {
+        $result = MasterData::getResto();
+        return $this->sendResponse($result, 'Get Restaurant successfully.');
+    }
+
+    public function restoMenu(Request $request)
+    {
+        $resto_id = isset($request->resto_id) ? $request->resto_id : '';
+
+        $result = MasterData::getRestoMenu($resto_id);
+
+        foreach ($result as $key => $value) {
+            if ($value->image != null) {
+                $value->image = env('ADMIN_ENDPOINT').$value->image;
+            } else {
+                $value->image = env('assets/default_food.jpeg');
+            }
+        }
+
+        return $this->sendResponse($result, 'Get Menu successfully.');
+    }
 }

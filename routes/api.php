@@ -57,6 +57,8 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get('province', 'province');
             Route::get('city', 'city');
             Route::get('city/{province_id}', 'city', );
+            Route::get('restaurant', 'resto', );
+            Route::post('menu', 'restoMenu', );
         });
     });
     
