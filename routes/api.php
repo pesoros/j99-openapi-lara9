@@ -47,7 +47,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::prefix('check')->group(function () {
         Route::controller(CheckController::class)->group(function () {
-            Route::get('ticket/{booking_code}', 'cekTicket');
+            Route::get('book/{booking_code}', 'cekBook');
+            Route::get('ticket/{ticket_code}', 'cekTicket');
         });
     });
 

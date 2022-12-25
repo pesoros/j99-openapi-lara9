@@ -8,7 +8,7 @@ use App\Models\Check;
 
 class CheckController extends BaseController
 {
-    public function cekTicket($booking_code)
+    public function cekBook($booking_code)
     {
         $result = Check::getBook($booking_code);
         if (!$result) {
@@ -28,6 +28,18 @@ class CheckController extends BaseController
         if (empty($result)) {
             return $this->sendError('Data Not Found');
         } 
+
+        return $this->sendResponse($result, 'Get ticket view successfully.');
+    }
+
+    public function cekTicket($ticket_code)
+    {
+        $result = Check::getTicket($ticket_code, 'ticket');
+        if (empty($result)) {
+            return $this->sendError('Data Not Found ..');
+        } 
+
+        $result->code_type = 'ticket';
 
         return $this->sendResponse($result, 'Get ticket view successfully.');
     }

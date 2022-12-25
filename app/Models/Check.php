@@ -38,8 +38,12 @@ class Check extends Model
         return $query;
     }
 
-    public function scopeGetTicket($query, $bookingCode)
+    public function scopeGetTicket($query, $code, $type = null)
     {
+        $whereField = 'tbook.booking_code';
+        if ($type === 'ticket') {
+            $whereField = 'tps.ticket_number';
+        }
         $query = DB::connection('mysql2')->table('tkt_passenger_pcs AS tps')
             ->selectRaw("
                 tbook.booking_code,
@@ -71,7 +75,7 @@ class Check extends Model
             {
                 $join->on('tpoint.trip_assign_id', '=', 'tras.id')->where('tpoint.dep_point', '=', 'tbook.pickup_trip_location')->where('tpoint.arr_point', '=', 'tbook.drop_trip_location');
             })
-            ->where('tbook.booking_code', $bookingCode)
+            ->where($whereField, $code)
             ->get();
         return $query;
     }
