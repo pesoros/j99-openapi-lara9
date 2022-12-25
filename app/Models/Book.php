@@ -144,7 +144,7 @@ class Book extends Model
         return $save;
     }
 
-    public function scopeUpdateStatusPayment($query, $booking_code,$status)
+    public function scopeUpdateStatusPayment($query, $booking_code, $status)
     {
         $data['payment_status'] = $status;
         $update = DB::connection('mysql2')->table('tkt_booking_head')
@@ -162,4 +162,24 @@ class Book extends Model
 
         return $booking;
     }
+
+    public function scopeCreateCancel($query, $bookingCode, $reason)
+	{	 
+		$updata['payment_status'] = 2;
+        $cancelData = [
+            "booking_code" => $bookingCode,
+            "reason" => $reason,
+            "date" => NOW(),
+        ];
+        $update = DB::where('booking_code', $bookingCode)
+            ->update('tkt_booking_head',$updata);
+
+        $savecancel = DB::connection('mysql2')->table('op_cancel')
+            ->insert($cancelData);
+		
+		$update = DB::where('booking_code', $bookingCode)
+            ->update('tkt_booking',['tkt_refund_id' => '1']);
+
+		return $savecancel;
+	}
 }

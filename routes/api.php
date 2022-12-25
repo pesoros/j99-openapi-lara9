@@ -40,6 +40,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::controller(BookController::class)->group(function () {
             Route::post('book', 'book');
             Route::post('confirmation', 'bookConfirmation');
+            Route::post('cancel', 'bookCancelation');
         });
     });
 

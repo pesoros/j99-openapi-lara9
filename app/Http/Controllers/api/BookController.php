@@ -8,12 +8,47 @@ use App\Models\Book;
 
 class BookController extends BaseController
 {
+    public function bookConfirmation(Request $request)
+    {
+        $getBooking = Book::getBooking($request->booking_id);
+        
+        if (!$getBooking) {
+            return $this->sendError('Booking not found');
+        }
+
+        $savePayment = Book::savePayment([
+            "payment_id" => $request->payment_id,
+            "external_id" => $request->booking_id,
+            "amount" => $request->amount,
+            "transaction_timestamp" => NOW(),
+            "channel_name" => $request->user()->name,
+            "code" => $request->user()->id
+        ]);
+
+        if (intval($request->amount) >= intval($getBooking->total_price)) {
+            $status = 1;
+        } else {
+            $status = 0;
+        }
+
+        $updatPaymentstatus = Book::updateStatusPayment($request->booking_id,$status);
+
+        return $this->sendResponse($request->all(), 'Confirmation successfully.');
+    }
+
+    public function bookCancelation(Request $request)
+    {
+        $result = Book::createCancel($request->booking_code,$request->reason);
+
+        return $this->sendResponse($result, 'Cancel successfully.');
+    }
+
     public function book(Request $request)
     {
         $timezone = Book::getWsSetting(1);
         date_default_timezone_set($timezone[0]->timezone);
         $dateNow = date('Y-m-d H:i:s');
-        $bookingCode = $this->codeGenerate("B", 8);
+        $bookingCode = $this->codeGenerate("B", 10);
         $total_price = 0;
         $total_seat = 0;
         $roundTrip = 0;
@@ -180,7 +215,7 @@ class BookController extends BaseController
                 if (Book::createGroup($postData)) {
 
                     foreach ($seatPicked as $key => $value) {
-                        $ticketNumber = $this->codeGenerate("T", 8);
+                        $ticketNumber = $this->codeGenerate("T", 10);
                         $ticketdata = [
                             'booking_id' => $bookId,
                             'ticket_number' => $ticketNumber,
@@ -308,33 +343,5 @@ class BookController extends BaseController
         $result = $head . '-' . $randomString;
 
         return $result;
-    }
-
-    public function bookConfirmation(Request $request)
-    {
-        $getBooking = Book::getBooking($request->booking_id);
-        
-        if (!$getBooking) {
-            return $this->sendError('Booking not found');
-        }
-
-        $savePayment = Book::savePayment([
-            "payment_id" => $request->payment_id,
-            "external_id" => $request->booking_id,
-            "amount" => $request->amount,
-            "transaction_timestamp" => NOW(),
-            "channel_name" => $request->user()->name,
-            "code" => $request->user()->id
-        ]);
-
-        if (intval($request->amount) >= intval($getBooking->total_price)) {
-            $status = 1;
-        } else {
-            $status = 0;
-        }
-
-        $updatPaymentstatus = Book::updateStatusPayment($request->booking_id,$status);
-
-        return $this->sendResponse($request->all(), 'Confirmation successfully.');
     }
 }
