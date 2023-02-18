@@ -171,14 +171,19 @@ class Book extends Model
             "reason" => $reason,
             "date" => NOW(),
         ];
-        $update = DB::where('booking_code', $bookingCode)
-            ->update('tkt_booking_head',$updata);
+        $update = DB::connection('mysql2')
+            ->table('tkt_booking_head')
+            ->where('booking_code', $bookingCode)
+            ->update($updata);
 
-        $savecancel = DB::connection('mysql2')->table('op_cancel')
+        $savecancel = DB::connection('mysql2')
+            ->table('op_cancel')
             ->insert($cancelData);
 		
-		$update = DB::where('booking_code', $bookingCode)
-            ->update('tkt_booking',['tkt_refund_id' => '1']);
+		$update = DB::connection('mysql2')
+            ->table('tkt_booking')
+            ->where('booking_code', $bookingCode)
+            ->update(['tkt_refund_id' => '1']);
 
 		return $savecancel;
 	}
