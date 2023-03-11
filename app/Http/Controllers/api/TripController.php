@@ -89,12 +89,19 @@ class TripController extends BaseController
 
             if (trim($value) != 'X' && trim($value) != '') {
                 $rowcolumn = str_split(trim($value));
+                if (COUNT($rowcolumn) == 2) {
+                    $srow = $rowcolumn[0];
+                    $scolumn = $rowcolumn[1];
+                } else if (COUNT($rowcolumn) == 3) {
+                    $srow = $rowcolumn[0].$rowcolumn[1];
+                    $scolumn = $rowcolumn[2];
+                }
                 $result['seats'][] = [
                     'name' => trim($value),
                     'isAvailable' => $avail,
                     'isSeat' => true,
-                    'row' => $rowcolumn[0],
-                    'column' => array_search($rowcolumn[1], $alphabet) + 1,
+                    'row' => $srow,
+                    'column' => array_search(strtoupper($scolumn), $alphabet) + 1,
                 ];
             }            
         }
