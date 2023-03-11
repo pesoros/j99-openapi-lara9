@@ -16,9 +16,9 @@ class MasterData extends Model
     public function scopeCity($query, $province_id)
     {
         if ($province_id !== null) {
-            $query = DB::connection('mysql2')->table('wil_city')->where('province_id', $province_id)->get();
+            $query = DB::connection('mysql2')->table('wil_city AS city')->join('trip_location AS tl','tl.city', '=', 'city.id')->where('city.province_id', $province_id)->get();
         } else {
-            $query = DB::connection('mysql2')->table('wil_city')->get();
+            $query = DB::connection('mysql2')->table('wil_city AS city')->join('trip_location AS tl','tl.city', '=', 'city.id')->get();
         }
 
         return $query;
