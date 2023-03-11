@@ -131,7 +131,7 @@ class BookController extends BaseController
         $data['bookingCode'] = $bookingCode;
         $data['payment']['total_price'] = $total_price;
    
-        return $this->sendResponse($data, 'Book successfully.');
+        return $this->sendResponse($data, 'Book successfully.', true);
     }
 
     public function setTicket($datas, $bookingCode, $offer_code)

@@ -15,13 +15,22 @@ class BaseController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function sendResponse($result, $message)
+    public function sendResponse($result, $message, $blocktime = false)
     {
-    	$response = [
-            'success' => true,
-            'message' => $message,
-            'data'    => $result,
-        ];
+        if ($bloctime == true) {
+            $response = [
+                'success' => true,
+                'message' => $message,
+                'blockTime'=> 60,
+                'data'    => $result,
+            ];
+        } else {
+            $response = [
+                'success' => true,
+                'message' => $message,
+                'data'    => $result,
+            ];
+        }
 
 
         return response()->json($response, 200);
