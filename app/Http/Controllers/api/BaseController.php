@@ -17,7 +17,7 @@ class BaseController extends Controller
      */
     public function sendResponse($result, $message, $blocktime = false)
     {
-        if ($bloctime == true) {
+        if ($blocktime == true) {
             $response = [
                 'success' => true,
                 'message' => $message,
