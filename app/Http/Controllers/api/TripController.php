@@ -100,7 +100,7 @@ class TripController extends BaseController
                     'name' => trim($value),
                     'isAvailable' => $avail,
                     'isSeat' => true,
-                    'row' => $srow,
+                    'row' => INTVAL($srow),
                     'column' => array_search(strtoupper($scolumn), $alphabet) + 1,
                 ];
             }            
