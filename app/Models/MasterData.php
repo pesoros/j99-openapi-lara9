@@ -17,9 +17,8 @@ class MasterData extends Model
     {
         $query = DB::connection('mysql2')
             ->table('wil_city AS city')
-            ->selectRaw('city.id, city.name AS namaKota')
+            ->selectRaw('tl.id as poolId, tl.name as poolName, city.id as cityId, city.name AS namaKota')
             ->join('trip_location AS tl','tl.city', '=', 'city.id')
-            ->groupBy('city.name')
             ->get();
         return $query;
     }

@@ -25,8 +25,8 @@ class TripController extends BaseController
             return $this->sendError('Date must be filled');
         } 
 
-        $dep = Trip::getCity($request->departure);
-        $arr = Trip::getCity($request->arrival);
+        $dep = Trip::getCityPoint($request->departure);
+        $arr = Trip::getCityPoint($request->arrival);
 
         $result = Trip::listBus($request, $dep->name, $arr->name);
         
@@ -47,7 +47,7 @@ class TripController extends BaseController
             } else {
                 $value->image = base_url('assets/default_bus.jpeg');
             }
-            $stppg = Trip::getTrasPoint($value->tras_id);;
+            $stppg = Trip::getTrasPoint($value->tras_id);
             $value->stoppage_points = $stppg;
             unset($value->pickup_points);
             unset($value->dropoff_points);

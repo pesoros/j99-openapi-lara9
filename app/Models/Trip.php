@@ -11,8 +11,8 @@ class Trip extends Model
     {
         $kelas = $request->fleet_type;
         $unit_type = $request->unit_type;
-        $start = $dep;
-        $end = $arr;
+        $fstart = $dep;
+        $fend = $arr;
         $date = $request->date;
         $whereext = '';
 
@@ -24,20 +24,9 @@ class Trip extends Model
             $whereext .= " AND fr.unit_id = ".$unit_type;
         }
 
-        $fstart = explode("-",$start);
-        $fend = explode("-",$end);
+        $whereext .= " AND tl1.name = '".trim($fstart)."'";
 
-        if (count($fstart) > 1) {
-            $whereext .= " AND tl1.name = '".trim($fstart[1])."'";
-        } else {
-            $whereext .= " AND citydep.name = '".$start."'";
-        }
-
-        if (count($fend) > 1) {
-            $whereext .= " AND tl2.name = '".trim($fend[1])."'";
-        } else {
-            $whereext .= " AND cityarr.name = '".$end."'";
-        }
+        $whereext .= " AND tl2.name = '".trim($fend)."'";
 
         $query = DB::connection('mysql2')->select(
             DB::connection('mysql2')->raw("
@@ -132,9 +121,9 @@ class Trip extends Model
         return $query;
     }
 
-    public function scopeGetCity($query, $id)
+    public function scopeGetCityPoint($query, $id)
     {
-        $query = DB::connection('mysql2')->table('wil_city AS city')->where('city.id', '=', $id)->first();
+        $query = DB::connection('mysql2')->table('trip_location AS tl')->where('tl.id', '=', $id)->first();
 
         return $query;
     }
@@ -143,11 +132,12 @@ class Trip extends Model
     {
         $query = DB::connection('mysql2')->table('trip_point AS tpoint')
             ->selectRaw('
-                city.id as bpId,
+                city.id as cityId,
+                tl.id as bpId,
                 city.name as bpName,
                 tpoint.dep_time as time,
                 tpoint.dep_point as location,
-                tpoint.description as address
+                tl.description as address
             ')
             ->join('trip_location AS tl','tl.name', '=', 'tpoint.dep_point')
             ->join('wil_city AS city','city.id', '=', 'tl.city')
