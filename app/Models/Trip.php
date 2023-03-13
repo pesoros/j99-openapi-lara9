@@ -7,12 +7,12 @@ use Illuminate\Support\Facades\DB;
 
 class Trip extends Model
 {
-    public function scopeListBus($query, $request)
+    public function scopeListBus($query, $request, $dep, $arr)
     {
         $kelas = $request->fleet_type;
         $unit_type = $request->unit_type;
-        $start = $request->arrival;
-        $end = $request->departure;
+        $start = $dep;
+        $end = $arr;
         $date = $request->date;
         $whereext = '';
 
@@ -128,6 +128,13 @@ class Trip extends Model
                 WHERE id = $fleet_type_id
             ")
         );
+
+        return $query;
+    }
+
+    public function scopeGetCity($query, $id)
+    {
+        $query = DB::connection('mysql2')->table('wil_city AS city')->where('city.id', '=', $id)->first();
 
         return $query;
     }

@@ -25,7 +25,10 @@ class TripController extends BaseController
             return $this->sendError('Date must be filled');
         } 
 
-        $result = Trip::listBus($request);
+        $dep = Trip::getCity($request->departure);
+        $arr = Trip::getCity($request->arrival);
+
+        $result = Trip::listBus($request, $dep->name, $arr->name);
         
         if (empty($result)) {
             return $this->sendError('Data Not Found');       
@@ -38,24 +41,14 @@ class TripController extends BaseController
             if ($value->seatAvail < 0) {
                 $value->seatAvail = 0;
             }
-            $spday = explode(',', $value->sp_day);
-            for ($i=0; $i < count($spday); $i++) { 
-                if ($spday[$i] == $dayArray[$dayforday]) {
-                    $value->price = strval($value->sp_price);
-                    $i = count($spday);
-                }
-            }
-            if ($value->price_ext !== null) {
-                $value->price = strval($value->price + intval($value->price_ext));
-            }
 
             if ($value->image != null) {
                 $value->image = getenv('ADMIN_ENDPOINT').$value->image;
             } else {
                 $value->image = base_url('assets/default_bus.jpeg');
             }
-            unset($result[$key]['pickup_points']);
-            unset($result[$key]['dropoff_points']);
+            unset($value->pickup_points);
+            unset($value->dropoff_points);
         }
 
         return $this->sendResponse($result, 'Get list bus successfully.');
