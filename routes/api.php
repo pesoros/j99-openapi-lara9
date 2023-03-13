@@ -54,6 +54,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::prefix('master')->group(function () {
         Route::controller(MasterDataController::class)->group(function () {
+            Route::get('poolpair', 'poolPair', );
             Route::get('city', 'city');
             Route::get('restaurant', 'resto', );
             Route::post('menu', 'restoMenu', );

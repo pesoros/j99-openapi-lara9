@@ -44,4 +44,11 @@ class MasterDataController extends BaseController
 
         return $this->sendResponse($result, 'Get Menu successfully.');
     }
+
+    public function poolPair()
+    {
+        $result = MasterData::poolPair();
+   
+        return $this->sendResponse($result, 'Get Pool Pair successfully.');
+    }
 }
