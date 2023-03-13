@@ -54,6 +54,8 @@ class TripController extends BaseController
             } else {
                 $value->image = base_url('assets/default_bus.jpeg');
             }
+            unset($result[$key]['pickup_points']);
+            unset($result[$key]['dropoff_points']);
         }
 
         return $this->sendResponse($result, 'Get list bus successfully.');
