@@ -70,6 +70,11 @@ class BookController extends BaseController
         $getPricePerSeat = Book::getTruePrice($request->pergi['booking_date'], $request->pergi['fleet_type_id'], $request->pergi['pickup_location'], $request->pergi['drop_location']);
 
         $extPrice = $getPricePerSeat[0]->price_ext ? $getPricePerSeat[0]->price_ext : 0;
+
+        if (strval($request->pergi['pricePerSeat']) !== strval(($getPricePerSeat[0]->price + $extPrice))) {
+            return $this->sendError('price error');
+        }
+        
         $setPergiPrice = $request->pergi;
         $setPergiPrice['pricePerSeat'] = $getPricePerSeat[0]->price + $extPrice;
         $request->merge([
@@ -85,6 +90,12 @@ class BookController extends BaseController
             $roundTrip = 1;
             $total_seat = $total_seat + count($request->pulang['seatPicked']);
             $getPricePerSeat = Book::getTruePrice($request->pergi['booking_date'], $request->pulang['fleet_type_id'], $request->pulang['pickup_location'], $request->pulang['drop_location']);
+            $extPrice = $getPricePerSeat[0]->price_ext ? $getPricePerSeat[0]->price_ext : 0;
+            
+            if (strval($request->pulang['pricePerSeat']) !== strval(($getPricePerSeat[0]->price + $extPrice))) {
+                return $this->sendError('price error');
+            }
+
             $setPulangPrice = $request->pulang;  
             $setPulangPrice['pricePerSeat'] = $getPricePerSeat[0]->price + $extPrice;
             $request->merge([
