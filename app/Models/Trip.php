@@ -50,7 +50,6 @@ class Trip extends Model
                 tp.type AS class,
                 tp.image,
                 tr.approximate_time AS duration,
-                tr.stoppage_points,
                 tr.distance,
                 tr.pickup_points,
                 tr.dropoff_points,
@@ -62,7 +61,8 @@ class Trip extends Model
                 tprs.price as normal_price,
                 citydep.name as citydep,
                 cityarr.name as cityarr,
-                trext.price as price_ext
+                trext.price as price_ext,
+                tras.id as tras_id
                 FROM trip_point_price AS tprs
                 INNER JOIN trip_point AS tpoint ON tpoint.id = tprs.point_id
                 INNER JOIN trip_assign AS tras ON tras.id = tpoint.trip_assign_id
@@ -135,6 +135,24 @@ class Trip extends Model
     public function scopeGetCity($query, $id)
     {
         $query = DB::connection('mysql2')->table('wil_city AS city')->where('city.id', '=', $id)->first();
+
+        return $query;
+    }
+
+    public function scopeGetTrasPoint($query, $id)
+    {
+        $query = DB::connection('mysql2')->table('trip_point AS tpoint')
+            ->selectRaw('
+                city.id as bpId,
+                city.name as bpName,
+                tpoint.dep_time as time,
+                tpoint.dep_point as location
+            ')
+            ->join('trip_location AS tl','tl.name', '=', 'tpoint.dep_point')
+            ->join('wil_city AS city','city.id', '=', 'tl.city')
+            ->where('tpoint.trip_assign_id', '=', $id)
+            ->groupBy('location')
+            ->get();
 
         return $query;
     }

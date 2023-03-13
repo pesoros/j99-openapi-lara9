@@ -47,6 +47,8 @@ class TripController extends BaseController
             } else {
                 $value->image = base_url('assets/default_bus.jpeg');
             }
+            $stppg = Trip::getTrasPoint($value->tras_id);;
+            $value->stoppage_points = $stppg;
             unset($value->pickup_points);
             unset($value->dropoff_points);
         }
