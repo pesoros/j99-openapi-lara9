@@ -146,7 +146,8 @@ class Trip extends Model
                 city.id as bpId,
                 city.name as bpName,
                 tpoint.dep_time as time,
-                tpoint.dep_point as location
+                tpoint.dep_point as location,
+                tpoint.description as address
             ')
             ->join('trip_location AS tl','tl.name', '=', 'tpoint.dep_point')
             ->join('wil_city AS city','city.id', '=', 'tl.city')
